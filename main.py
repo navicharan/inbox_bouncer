@@ -1,26 +1,27 @@
 ```python
-import re
+import logging
 
-def longest_substring_with_k_vowels(input_str, k):
-    if not isinstance(input_str, str) or not isinstance(k, int) or k < 0:
-        raise ValueError('Invalid input. Please provide a valid string and a non-negative integer.')
-    
-    vowels = set('aeiou')
-    max_length = 0
-    result = ''
-    
-    for i in range(len(input_str)):
-        for j in range(i + 1, len(input_str) + 1):
-            substring = input_str[i:j]
-            vowel_count = sum(1 for char in substring if char.lower() in vowels)
-            if vowel_count == k and len(substring) > max_length:
-                max_length = len(substring)
-                result = substring
-    
-    return result
+logging.basicConfig(level=logging.INFO)
 
-# Example Usage
-input_str = 'leetcode'
-k = 2
-print(longest_substring_with_k_vowels(input_str, k))
+def fibonacci(n):
+    if n <= 0:
+        logging.error('Input must be a positive integer')
+        return None
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    else:
+        fib_series = [0, 1]
+        a, b = 0, 1
+        for _ in range(2, n):
+            a, b = b, a + b
+            fib_series.append(b)
+        return fib_series
+
+if __name__ == '__main__':
+    n = 10
+    result = fibonacci(n)
+    if result:
+        logging.info(f'Fibonacci series of length {n}: {result}')
 ```
