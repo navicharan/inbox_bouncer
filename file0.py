@@ -1,37 +1,29 @@
-from collections import defaultdict
-import heapq
+from heapq import heappush, heappop
 
-class Graph:
-    def __init__(self):
-        self.graph = defaultdict(list)
+def min_spanning_tree(graph):
+    visited = set()
+    min_tree = []
+    start_node = next(iter(graph))
+    visited.add(start_node)
+    heap = [(cost, start_node, next_node) for next_node, cost in graph[start_node]]
+    heapify(heap)
 
-    def add_edge(self, node1, node2, weight):
-        self.graph[node1].append((node2, weight))
-        self.graph[node2].append((node1, weight))
-
-    def dijkstra(self, start):
-        distances = {node: float('inf') for node in self.graph}
-        distances[start] = 0
-        queue = [(0, start)]
-
-        while queue:
-            current_distance, current_node = heapq.heappop(queue)
-
-            if current_distance > distances[current_node]:
-                continue
-
-            for neighbor, weight in self.graph[current_node]:
-                new_distance = current_distance + weight
-                if new_distance < distances[neighbor]:
-                    distances[neighbor] = new_distance
-                    heapq.heappush(queue, (new_distance, neighbor))
-
-        return distances
+    while heap:
+        cost, src, dest = heappop(heap)
+        if dest not in visited:
+            visited.add(dest)
+            min_tree.append((src, dest, cost))
+            for next_node, next_cost in graph[dest]:
+                if next_node not in visited:
+                    heappush(heap, (next_cost, dest, next_node))
+    return min_tree
 
 # Example Usage
-# graph = Graph()
-# graph.add_edge('A', 'B', 1)
-# graph.add_edge('B', 'C', 2)
-# graph.add_edge('A', 'C', 4)
-# distances = graph.dijkstra('A')
-# print(distances)
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('A', 1), ('C', 2)],
+    'C': [('A', 4), ('B', 2)]
+}
+
+minimum_spanning_tree = min_spanning_tree(graph)
+print(minimum_spanning_tree)
