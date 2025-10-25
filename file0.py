@@ -1,29 +1,19 @@
-from heapq import heappush, heappop
+from flask import Flask, request, jsonify
 
-def min_spanning_tree(graph):
-    visited = set()
-    min_tree = []
-    start_node = next(iter(graph))
-    visited.add(start_node)
-    heap = [(cost, start_node, next_node) for next_node, cost in graph[start_node]]
-    heapify(heap)
+app = Flask(__name__)
 
-    while heap:
-        cost, src, dest = heappop(heap)
-        if dest not in visited:
-            visited.add(dest)
-            min_tree.append((src, dest, cost))
-            for next_node, next_cost in graph[dest]:
-                if next_node not in visited:
-                    heappush(heap, (next_cost, dest, next_node))
-    return min_tree
+@app.route('/api', methods=['POST'])
+def predict():
+    try:
+        data = request.get_json()
+        if 'input_data' not in data:
+            raise ValueError('Input data is missing')
+        input_data = data['input_data']
+        # Perform prediction using DeepSeek-Coder V2 model
+        prediction = deepseek_coder_v2_model.predict(input_data)
+        return jsonify({'prediction': prediction}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-# Example Usage
-graph = {
-    'A': [('B', 1), ('C', 4)],
-    'B': [('A', 1), ('C', 2)],
-    'C': [('A', 4), ('B', 2)]
-}
-
-minimum_spanning_tree = min_spanning_tree(graph)
-print(minimum_spanning_tree)
+if __name__ == '__main__':
+    app.run()
